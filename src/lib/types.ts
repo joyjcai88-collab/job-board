@@ -36,7 +36,7 @@ export const CATEGORIES = [
 ] as const;
 
 export const SOURCES = [
-  { key: "linkedin", label: "LinkedIn" },
+  { key: "linkedin", label: "LinkedIn / Indeed" },
   { key: "hn", label: "Hacker News" },
   { key: "themuse", label: "The Muse" },
 ] as const;

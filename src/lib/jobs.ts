@@ -1,16 +1,16 @@
 import { Job } from "./types";
-import { generateLinkedInJobs } from "./sources/linkedin";
+import { fetchJSearchJobs } from "./sources/jsearch";
 import { fetchHNJobs } from "./sources/hn";
 import { fetchMuseJobs } from "./sources/themuse";
 
 export async function aggregateJobs(): Promise<Job[]> {
-  const [linkedInJobs, hnJobs, museJobs] = await Promise.all([
-    Promise.resolve(generateLinkedInJobs()),
+  const [jsearchJobs, hnJobs, museJobs] = await Promise.all([
+    fetchJSearchJobs(),
     fetchHNJobs(),
     fetchMuseJobs(),
   ]);
 
-  const allJobs = [...museJobs, ...hnJobs, ...linkedInJobs];
+  const allJobs = [...jsearchJobs, ...museJobs, ...hnJobs];
 
   return allJobs.sort((a, b) => {
     if (a.postedAt && b.postedAt) {

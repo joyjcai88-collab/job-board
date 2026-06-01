@@ -3,7 +3,7 @@
 import { Job } from "@/lib/types";
 
 const SOURCE_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  linkedin: { bg: "bg-blue-100 dark:bg-blue-900/40", text: "text-blue-800 dark:text-blue-300", label: "LinkedIn" },
+  linkedin: { bg: "bg-blue-100 dark:bg-blue-900/40", text: "text-blue-800 dark:text-blue-300", label: "LinkedIn / Indeed" },
   hn: { bg: "bg-orange-100 dark:bg-orange-900/40", text: "text-orange-800 dark:text-orange-300", label: "Hacker News" },
   themuse: { bg: "bg-purple-100 dark:bg-purple-900/40", text: "text-purple-800 dark:text-purple-300", label: "The Muse" },
   web: { bg: "bg-green-100 dark:bg-green-900/40", text: "text-green-800 dark:text-green-300", label: "Web" },
@@ -76,6 +76,11 @@ export default function JobCard({ job }: { job: Job }) {
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${category.bg} ${category.text}`}>
           {category.label}
         </span>
+        {job.salary && (
+          <span className="text-xs font-medium text-green-700 dark:text-green-400">
+            {job.salary}
+          </span>
+        )}
         {job.postedAt && (
           <span className="text-xs text-zinc-400 dark:text-zinc-500">
             {timeAgo(job.postedAt)}
