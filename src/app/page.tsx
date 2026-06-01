@@ -10,10 +10,10 @@ export default async function Home() {
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-          Tech & VC Jobs
+          Job Board
         </h1>
         <p className="mt-2 text-zinc-500 dark:text-zinc-400 text-base">
-          Latest openings in technology and venture capital across Silicon Valley, NYC, and Los Angeles.
+          VC, Chief of Staff, GTM/Growth, Product, Biz Ops, and Healthtech roles across Silicon Valley, NYC, and LA.
           Aggregated from LinkedIn, Hacker News, and The Muse.
         </p>
       </header>

@@ -23,16 +23,13 @@ const LOCATION_PATTERNS: Record<string, { region: Job["region"]; label: string }
   "culver city": { region: "los_angeles", label: "Culver City, CA" },
 };
 
-const VC_KEYWORDS = [
-  "venture", "vc", "investment", "portfolio", "fund", "capital",
-  "partner", "principal", "associate", "analyst",
-];
-
-const TECH_KEYWORDS = [
-  "engineer", "developer", "software", "frontend", "backend", "fullstack",
-  "full-stack", "devops", "sre", "data", "ml", "machine learning", "ai",
-  "product manager", "designer", "ux", "ui", "cloud", "infrastructure",
-  "security", "mobile", "ios", "android", "web", "api", "platform",
+const ROLE_PATTERNS: Array<{ pattern: RegExp; category: Job["category"] }> = [
+  { pattern: /venture\s*capital|vc\s+(associate|principal|analyst|partner)|investor|fund\s+manager/i, category: "vc" },
+  { pattern: /chief\s+of\s+staff|cos\b/i, category: "cos" },
+  { pattern: /\bgtm\b|go.to.market|growth\s+(lead|manager|head)|revenue\s+ops|revops|demand\s+gen|sales\s+ops/i, category: "gtm" },
+  { pattern: /product\s+(manager|lead|head|director)|pm\b.*startup/i, category: "product" },
+  { pattern: /biz\s*ops|business\s+ops|strategy\s+(&|and)\s+ops|partnerships|corp\s*dev|strategic\s+partnerships/i, category: "bizops" },
+  { pattern: /health\s*tech|healthcare|telehealth|digital\s+health|clinical\s+ops|medtech|biotech/i, category: "healthtech" },
 ];
 
 function detectRegion(text: string): { region: Job["region"]; label: string } | null {
@@ -43,13 +40,11 @@ function detectRegion(text: string): { region: Job["region"]; label: string } | 
   return null;
 }
 
-function detectIndustry(text: string): Job["industry"] {
-  const lower = text.toLowerCase();
-  const hasVC = VC_KEYWORDS.some(k => lower.includes(k));
-  const hasTech = TECH_KEYWORDS.some(k => lower.includes(k));
-  if (hasVC && hasTech) return "both";
-  if (hasVC) return "venture_capital";
-  return "technology";
+function detectCategory(text: string): Job["category"] | null {
+  for (const { pattern, category } of ROLE_PATTERNS) {
+    if (pattern.test(text)) return category;
+  }
+  return null;
 }
 
 function extractTitle(text: string): string {
@@ -71,8 +66,12 @@ function extractCompany(text: string): string {
 function extractTags(text: string): string[] {
   const tags: string[] = [];
   const lower = text.toLowerCase();
-  const allKeywords = [...TECH_KEYWORDS, ...VC_KEYWORDS];
-  for (const kw of allKeywords) {
+  const keywords = [
+    "gtm", "growth", "venture", "fundraising", "product", "chief of staff",
+    "partnerships", "strategy", "operations", "healthtech", "ai", "saas",
+    "revenue", "startup", "seed", "series a", "series b",
+  ];
+  for (const kw of keywords) {
     if (lower.includes(kw)) tags.push(kw);
   }
   return [...new Set(tags)].slice(0, 6);
@@ -94,14 +93,15 @@ export async function fetchHNJobs(): Promise<Job[]> {
       { next: { revalidate: 3600 } }
     );
     const searchData = await searchRes.json();
-
     if (!searchData.hits?.length) return jobs;
 
     const storyId = searchData.hits[0].objectID;
 
     const queries = [
-      "san francisco", "new york", "los angeles", "bay area",
-      "palo alto", "nyc", "mountain view", "santa monica",
+      "chief of staff", "GTM", "growth", "venture capital",
+      "product manager", "operations", "partnerships", "healthtech",
+      "head of growth", "revenue", "strategy",
+      "san francisco", "new york", "los angeles",
     ];
 
     const results = await Promise.all(
@@ -125,8 +125,8 @@ export async function fetchHNJobs(): Promise<Job[]> {
         const regionInfo = detectRegion(text);
         if (!regionInfo) continue;
 
-        const industry = detectIndustry(text);
-        if (industry !== "venture_capital" && industry !== "both" && industry !== "technology") continue;
+        const category = detectCategory(text);
+        if (!category) continue;
 
         const plainText = text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
@@ -141,7 +141,7 @@ export async function fetchHNJobs(): Promise<Job[]> {
           postedAt: hit.created_at || null,
           salary: null,
           tags: extractTags(text),
-          industry,
+          category,
           region: regionInfo.region,
         });
       }

@@ -16,10 +16,14 @@ const REGION_LABELS: Record<string, string> = {
   unknown: "Other",
 };
 
-const INDUSTRY_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  technology: { bg: "bg-emerald-100 dark:bg-emerald-900/40", text: "text-emerald-800 dark:text-emerald-300", label: "Tech" },
-  venture_capital: { bg: "bg-amber-100 dark:bg-amber-900/40", text: "text-amber-800 dark:text-amber-300", label: "VC" },
-  both: { bg: "bg-indigo-100 dark:bg-indigo-900/40", text: "text-indigo-800 dark:text-indigo-300", label: "Tech + VC" },
+const CATEGORY_STYLES: Record<string, { bg: string; text: string; label: string }> = {
+  vc: { bg: "bg-amber-100 dark:bg-amber-900/40", text: "text-amber-800 dark:text-amber-300", label: "VC" },
+  cos: { bg: "bg-rose-100 dark:bg-rose-900/40", text: "text-rose-800 dark:text-rose-300", label: "Chief of Staff" },
+  gtm: { bg: "bg-emerald-100 dark:bg-emerald-900/40", text: "text-emerald-800 dark:text-emerald-300", label: "GTM / Growth" },
+  product: { bg: "bg-indigo-100 dark:bg-indigo-900/40", text: "text-indigo-800 dark:text-indigo-300", label: "Product" },
+  bizops: { bg: "bg-sky-100 dark:bg-sky-900/40", text: "text-sky-800 dark:text-sky-300", label: "Biz Ops" },
+  healthtech: { bg: "bg-teal-100 dark:bg-teal-900/40", text: "text-teal-800 dark:text-teal-300", label: "Healthtech" },
+  other: { bg: "bg-zinc-100 dark:bg-zinc-800", text: "text-zinc-600 dark:text-zinc-400", label: "Other" },
 };
 
 function timeAgo(dateStr: string): string {
@@ -37,7 +41,7 @@ function timeAgo(dateStr: string): string {
 
 export default function JobCard({ job }: { job: Job }) {
   const source = SOURCE_STYLES[job.source] || SOURCE_STYLES.web;
-  const industry = INDUSTRY_STYLES[job.industry] || INDUSTRY_STYLES.technology;
+  const category = CATEGORY_STYLES[job.category] || CATEGORY_STYLES.other;
   const region = REGION_LABELS[job.region] || job.location;
 
   return (
@@ -69,8 +73,8 @@ export default function JobCard({ job }: { job: Job }) {
           </svg>
           {region}
         </span>
-        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${industry.bg} ${industry.text}`}>
-          {industry.label}
+        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${category.bg} ${category.text}`}>
+          {category.label}
         </span>
         {job.postedAt && (
           <span className="text-xs text-zinc-400 dark:text-zinc-500">

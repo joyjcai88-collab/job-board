@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tech & VC Jobs — Silicon Valley, NYC, LA",
+  title: "Job Board — VC, CoS, GTM, Product, Healthtech",
   description:
-    "Aggregated job listings in technology and venture capital from Silicon Valley, New York City, and Los Angeles. Sourced from LinkedIn, Hacker News, and The Muse.",
+    "Curated job listings in venture capital, chief of staff, GTM/growth, product, biz ops, and healthtech across Silicon Valley, NYC, and LA.",
 };
 
 export default function RootLayout({

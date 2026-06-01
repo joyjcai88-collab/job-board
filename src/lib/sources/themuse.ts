@@ -6,8 +6,25 @@ const MUSE_LOCATIONS = [
   { museValue: "Los Angeles, CA", region: "los_angeles" as const },
 ];
 
-const TECH_CATEGORIES = ["Software Engineering", "Data Science", "Product", "Design and UX", "IT"];
-const VC_CATEGORIES = ["Finance", "Business Development"];
+const MUSE_CATEGORIES = [
+  "Business Development",
+  "Finance",
+  "Product",
+  "Operations",
+  "Strategy",
+  "Healthcare",
+  "Marketing",
+  "Project Management",
+];
+
+const ROLE_PATTERNS: Array<{ pattern: RegExp; category: Job["category"] }> = [
+  { pattern: /venture\s*capital|vc\s|investor|fund\s+manager|portfolio/i, category: "vc" },
+  { pattern: /chief\s+of\s+staff/i, category: "cos" },
+  { pattern: /\bgtm\b|go.to.market|growth|revenue\s+op|revops|demand\s+gen|sales\s+op|outbound|lifecycle/i, category: "gtm" },
+  { pattern: /product\s+(manager|lead|head|director|owner)/i, category: "product" },
+  { pattern: /biz\s*ops|business\s+op|strategy|partnerships|corp\s*dev|strategic/i, category: "bizops" },
+  { pattern: /health|telehealth|clinical|medtech|biotech|pharma|medical|patient/i, category: "healthtech" },
+];
 
 interface MuseJob {
   id: number;
@@ -22,23 +39,12 @@ interface MuseJob {
   levels?: Array<{ name?: string; short_name?: string }>;
 }
 
-function classifyMuseJob(job: MuseJob): Job["industry"] {
-  const categories = (job.categories || []).map(c => c.name || "");
-  const title = job.name.toLowerCase();
-  const desc = (job.contents || "").toLowerCase();
-
-  const isVC =
-    categories.some(c => VC_CATEGORIES.includes(c)) ||
-    /venture|capital|fund|investment|portfolio/.test(title) ||
-    /venture capital|vc fund|investment fund/.test(desc);
-
-  const isTech =
-    categories.some(c => TECH_CATEGORIES.includes(c)) ||
-    /engineer|developer|software|data|product|design|devops|cloud|ai|ml/.test(title);
-
-  if (isVC && isTech) return "both";
-  if (isVC) return "venture_capital";
-  return "technology";
+function classifyCategory(job: MuseJob): Job["category"] | null {
+  const text = `${job.name} ${job.contents || ""}`;
+  for (const { pattern, category } of ROLE_PATTERNS) {
+    if (pattern.test(text)) return category;
+  }
+  return null;
 }
 
 function classifyRegion(locations: Array<{ name?: string }>): { region: Job["region"]; label: string } {
@@ -66,14 +72,15 @@ export async function fetchMuseJobs(): Promise<Job[]> {
   const seenIds = new Set<number>();
 
   try {
-    const fetches = MUSE_LOCATIONS.map(async (loc) => {
-      const url = `https://www.themuse.com/api/public/jobs?location=${encodeURIComponent(loc.museValue)}&category=Software%20Engineering&category=Data%20Science&category=Product&category=Finance&page=0`;
-
-      const res = await fetch(url, { next: { revalidate: 3600 } });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return (data.results || []) as MuseJob[];
-    });
+    const fetches = MUSE_LOCATIONS.flatMap((loc) =>
+      MUSE_CATEGORIES.map(async (cat) => {
+        const url = `https://www.themuse.com/api/public/jobs?location=${encodeURIComponent(loc.museValue)}&category=${encodeURIComponent(cat)}&page=0`;
+        const res = await fetch(url, { next: { revalidate: 3600 } });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data.results || []) as MuseJob[];
+      })
+    );
 
     const results = await Promise.all(fetches);
 
@@ -86,7 +93,9 @@ export async function fetchMuseJobs(): Promise<Job[]> {
         const { region, label } = classifyRegion(locations);
         if (region === "unknown") continue;
 
-        const industry = classifyMuseJob(job);
+        const category = classifyCategory(job);
+        if (!category) continue;
+
         const desc = stripHtml(job.contents || "");
 
         jobs.push({
@@ -99,8 +108,8 @@ export async function fetchMuseJobs(): Promise<Job[]> {
           source: "themuse",
           postedAt: job.publication_date || null,
           salary: null,
-          tags: (job.categories || []).map(c => c.name || "").filter(Boolean).slice(0, 5),
-          industry,
+          tags: (job.categories || []).map((c) => c.name || "").filter(Boolean).slice(0, 5),
+          category,
           region,
         });
       }

@@ -1,6 +1,6 @@
 "use client";
 
-import { REGIONS, INDUSTRIES, SOURCES, JobFilters } from "@/lib/types";
+import { REGIONS, CATEGORIES, SOURCES, JobFilters } from "@/lib/types";
 
 interface FiltersProps {
   filters: JobFilters;
@@ -73,14 +73,14 @@ export default function Filters({ filters, onChange, totalCount, filteredCount }
         </div>
 
         <div>
-          <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Industry</p>
+          <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Role Type</p>
           <div className="flex flex-wrap gap-2">
-            {INDUSTRIES.map((i) => (
+            {CATEGORIES.map((c) => (
               <ToggleChip
-                key={i.key}
-                label={i.label}
-                active={filters.industries.includes(i.key)}
-                onClick={() => onChange({ ...filters, industries: toggleItem(filters.industries, i.key) })}
+                key={c.key}
+                label={c.label}
+                active={filters.categories.includes(c.key)}
+                onClick={() => onChange({ ...filters, categories: toggleItem(filters.categories, c.key) })}
               />
             ))}
           </div>

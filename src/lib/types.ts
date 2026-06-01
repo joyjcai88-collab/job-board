@@ -9,13 +9,13 @@ export interface Job {
   postedAt: string | null;
   salary: string | null;
   tags: string[];
-  industry: "technology" | "venture_capital" | "both";
+  category: "vc" | "cos" | "gtm" | "product" | "bizops" | "healthtech" | "other";
   region: "silicon_valley" | "nyc" | "los_angeles" | "unknown";
 }
 
 export interface JobFilters {
   query: string;
-  industries: string[];
+  categories: string[];
   regions: string[];
   sources: string[];
 }
@@ -26,14 +26,17 @@ export const REGIONS = [
   { key: "los_angeles", label: "Los Angeles" },
 ] as const;
 
-export const INDUSTRIES = [
-  { key: "technology", label: "Technology" },
-  { key: "venture_capital", label: "Venture Capital" },
+export const CATEGORIES = [
+  { key: "vc", label: "Venture Capital" },
+  { key: "cos", label: "Chief of Staff" },
+  { key: "gtm", label: "GTM / Growth" },
+  { key: "product", label: "Product" },
+  { key: "bizops", label: "Biz Ops / Strategy" },
+  { key: "healthtech", label: "Healthtech" },
 ] as const;
 
 export const SOURCES = [
   { key: "linkedin", label: "LinkedIn" },
   { key: "hn", label: "Hacker News" },
   { key: "themuse", label: "The Muse" },
-  { key: "web", label: "Web Search" },
 ] as const;

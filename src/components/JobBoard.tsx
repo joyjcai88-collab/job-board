@@ -8,7 +8,7 @@ import Filters from "./Filters";
 export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
   const [filters, setFilters] = useState<JobFilters>({
     query: "",
-    industries: [],
+    categories: [],
     regions: [],
     sources: [],
   });
@@ -22,15 +22,7 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
       }
 
       if (filters.regions.length > 0 && !filters.regions.includes(job.region)) return false;
-
-      if (filters.industries.length > 0) {
-        if (job.industry === "both") {
-          if (!filters.industries.some((i) => ["technology", "venture_capital"].includes(i))) return false;
-        } else if (!filters.industries.includes(job.industry)) {
-          return false;
-        }
-      }
-
+      if (filters.categories.length > 0 && !filters.categories.includes(job.category)) return false;
       if (filters.sources.length > 0 && !filters.sources.includes(job.source)) return false;
 
       return true;
@@ -56,7 +48,7 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
         <div className="text-center py-16">
           <p className="text-zinc-500 dark:text-zinc-400 text-lg">No jobs match your filters.</p>
           <button
-            onClick={() => setFilters({ query: "", industries: [], regions: [], sources: [] })}
+            onClick={() => setFilters({ query: "", categories: [], regions: [], sources: [] })}
             className="mt-3 text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
           >
             Clear all filters
