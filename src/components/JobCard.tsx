@@ -2,11 +2,11 @@
 
 import { Job } from "@/lib/types";
 
-const SOURCE_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  linkedin: { bg: "bg-blue-100 dark:bg-blue-900/40", text: "text-blue-800 dark:text-blue-300", label: "LinkedIn / Indeed" },
-  hn: { bg: "bg-orange-100 dark:bg-orange-900/40", text: "text-orange-800 dark:text-orange-300", label: "Hacker News" },
-  themuse: { bg: "bg-purple-100 dark:bg-purple-900/40", text: "text-purple-800 dark:text-purple-300", label: "The Muse" },
-  web: { bg: "bg-green-100 dark:bg-green-900/40", text: "text-green-800 dark:text-green-300", label: "Web" },
+const SOURCE_LABELS: Record<string, string> = {
+  linkedin: "LinkedIn / Indeed",
+  hn: "Hacker News",
+  themuse: "The Muse",
+  web: "Web",
 };
 
 const REGION_LABELS: Record<string, string> = {
@@ -16,14 +16,14 @@ const REGION_LABELS: Record<string, string> = {
   unknown: "Other",
 };
 
-const CATEGORY_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  vc: { bg: "bg-amber-100 dark:bg-amber-900/40", text: "text-amber-800 dark:text-amber-300", label: "VC" },
-  cos: { bg: "bg-rose-100 dark:bg-rose-900/40", text: "text-rose-800 dark:text-rose-300", label: "Chief of Staff" },
-  gtm: { bg: "bg-emerald-100 dark:bg-emerald-900/40", text: "text-emerald-800 dark:text-emerald-300", label: "GTM / Growth" },
-  product: { bg: "bg-indigo-100 dark:bg-indigo-900/40", text: "text-indigo-800 dark:text-indigo-300", label: "Product" },
-  bizops: { bg: "bg-sky-100 dark:bg-sky-900/40", text: "text-sky-800 dark:text-sky-300", label: "Biz Ops" },
-  healthtech: { bg: "bg-teal-100 dark:bg-teal-900/40", text: "text-teal-800 dark:text-teal-300", label: "Healthtech" },
-  other: { bg: "bg-zinc-100 dark:bg-zinc-800", text: "text-zinc-600 dark:text-zinc-400", label: "Other" },
+const CATEGORY_LABELS: Record<string, string> = {
+  vc: "VC",
+  cos: "Chief of Staff",
+  gtm: "GTM / Growth",
+  product: "Product",
+  bizops: "Biz Ops",
+  healthtech: "Healthtech",
+  other: "Other",
 };
 
 function timeAgo(dateStr: string): string {
@@ -39,71 +39,75 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(diffDays / 30)}mo ago`;
 }
 
-export default function JobCard({ job }: { job: Job }) {
-  const source = SOURCE_STYLES[job.source] || SOURCE_STYLES.web;
-  const category = CATEGORY_STYLES[job.category] || CATEGORY_STYLES.other;
-  const region = REGION_LABELS[job.region] || job.location;
+function CompanyAvatar({ company }: { company: string }) {
+  const initials = company
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
 
   return (
-    <a
-      href={job.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-200 group"
+    <div className="w-12 h-12 rounded bg-[#eef3f8] flex items-center justify-center shrink-0 border border-border">
+      <span className="text-xs font-semibold text-linkedin-blue">{initials}</span>
+    </div>
+  );
+}
+
+export default function JobCard({
+  job,
+  selected,
+  onSelect,
+}: {
+  job: Job;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  const region = REGION_LABELS[job.region] || job.location;
+  const category = CATEGORY_LABELS[job.category] || "Other";
+  const source = SOURCE_LABELS[job.source] || "Web";
+
+  return (
+    <button
+      onClick={onSelect}
+      className={`w-full text-left px-4 py-3 border-b border-border flex gap-3 transition-colors cursor-pointer ${
+        selected
+          ? "bg-surface-active border-l-2 border-l-linkedin-blue"
+          : "bg-surface hover:bg-surface-hover border-l-2 border-l-transparent"
+      }`}
     >
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate text-base">
-            {job.title}
-          </h3>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-0.5">{job.company}</p>
+      <CompanyAvatar company={job.company} />
+      <div className="min-w-0 flex-1">
+        <h3
+          className={`text-sm font-semibold leading-snug mb-0.5 ${
+            selected ? "text-linkedin-blue" : "text-linkedin-blue"
+          }`}
+        >
+          {job.title}
+        </h3>
+        <p className="text-sm text-text-primary">{job.company}</p>
+        <p className="text-xs text-text-secondary mt-0.5">
+          {region} ({job.location})
+        </p>
+
+        <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+          {job.salary && (
+            <span className="text-xs text-text-secondary">{job.salary}</span>
+          )}
+          {job.salary && <span className="text-xs text-text-tertiary">·</span>}
+          <span className="text-xs text-text-secondary">{category}</span>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${source.bg} ${source.text}`}>
-            {source.label}
-          </span>
-        </div>
-      </div>
 
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        <span className="inline-flex items-center text-xs text-zinc-500 dark:text-zinc-400">
-          <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          {region}
-        </span>
-        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${category.bg} ${category.text}`}>
-          {category.label}
-        </span>
-        {job.salary && (
-          <span className="text-xs font-medium text-green-700 dark:text-green-400">
-            {job.salary}
-          </span>
-        )}
-        {job.postedAt && (
-          <span className="text-xs text-zinc-400 dark:text-zinc-500">
-            {timeAgo(job.postedAt)}
-          </span>
-        )}
-      </div>
-
-      <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3">
-        {job.description}
-      </p>
-
-      {job.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          {job.tags.slice(0, 4).map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
-            >
-              {tag}
+        <div className="flex items-center gap-1.5 mt-1.5">
+          {job.postedAt && (
+            <span className="text-xs text-text-tertiary">
+              {timeAgo(job.postedAt)}
             </span>
-          ))}
+          )}
+          {job.postedAt && <span className="text-xs text-text-tertiary">·</span>}
+          <span className="text-xs text-text-tertiary">{source}</span>
         </div>
-      )}
-    </a>
+      </div>
+    </button>
   );
 }
