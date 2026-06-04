@@ -143,6 +143,8 @@ export async function fetchHNJobs(): Promise<Job[]> {
           tags: extractTags(text),
           category,
           region: regionInfo.region,
+          workMode: /remote/i.test(text) ? "remote" : /hybrid/i.test(text) ? "hybrid" : "onsite",
+          companyStage: null,
         });
       }
     }

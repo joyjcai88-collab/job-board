@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { REGIONS, CATEGORIES, SOURCES, JobFilters } from "@/lib/types";
+import { REGIONS, CATEGORIES, SOURCES, WORK_MODES, JobFilters } from "@/lib/types";
 
 interface FiltersProps {
   filters: JobFilters;
@@ -14,7 +14,7 @@ function toggleItem(arr: string[], item: string): string[] {
   return arr.includes(item) ? arr.filter((i) => i !== item) : [...arr, item];
 }
 
-function FilterDropdown({
+function FilterChip({
   label,
   options,
   selected,
@@ -39,23 +39,23 @@ function FilterDropdown({
   }, []);
 
   const hasSelection = selected.length > 0;
+  const displayLabel = hasSelection
+    ? `${label} (${selected.length})`
+    : label;
 
   return (
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className={`inline-flex items-center gap-1 px-4 py-1.5 text-sm font-medium rounded-full border transition-colors cursor-pointer ${
+        className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium rounded-lg border transition-all cursor-pointer ${
           hasSelection
-            ? "bg-linkedin-blue text-white border-linkedin-blue"
-            : "bg-surface text-text-primary border-border hover:bg-surface-hover"
+            ? "bg-primary text-white border-primary shadow-sm"
+            : "bg-surface text-text-secondary border-border hover:border-text-tertiary hover:text-text-primary"
         }`}
       >
-        {label}
-        {hasSelection && (
-          <span className="ml-0.5 text-xs">({selected.length})</span>
-        )}
+        {displayLabel}
         <svg
-          className={`w-3.5 h-3.5 ml-0.5 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -65,19 +65,19 @@ function FilterDropdown({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-[200px] py-1">
+        <div className="absolute top-full left-0 mt-1.5 bg-surface border border-border rounded-xl shadow-lg z-50 min-w-[200px] py-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
           {options.map((opt) => {
             const isSelected = selected.includes(opt.key);
             return (
               <button
                 key={opt.key}
                 onClick={() => onToggle(opt.key)}
-                className="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-hover flex items-center gap-3 cursor-pointer transition-colors"
+                className="w-full text-left px-3.5 py-2 text-sm hover:bg-surface-hover flex items-center gap-2.5 cursor-pointer transition-colors"
               >
                 <span
-                  className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                  className={`w-4 h-4 rounded flex items-center justify-center shrink-0 border transition-colors ${
                     isSelected
-                      ? "bg-linkedin-blue border-linkedin-blue"
+                      ? "bg-primary border-primary"
                       : "border-text-tertiary"
                   }`}
                 >
@@ -99,43 +99,47 @@ function FilterDropdown({
 
 export default function Filters({ filters, onChange, totalCount, filteredCount }: FiltersProps) {
   const hasAnyFilter =
-    filters.query || filters.regions.length > 0 || filters.categories.length > 0 || filters.sources.length > 0;
+    filters.query || filters.regions.length > 0 || filters.categories.length > 0 || filters.sources.length > 0 || (filters.workModes?.length ?? 0) > 0;
 
   return (
-    <div className="bg-surface border-b border-border px-4 py-2.5">
-      <div className="max-w-[1128px] mx-auto flex items-center gap-2 flex-wrap">
-        <FilterDropdown
-          label="Location"
-          options={REGIONS}
-          selected={filters.regions}
-          onToggle={(key) => onChange({ ...filters, regions: toggleItem(filters.regions, key) })}
-        />
-        <FilterDropdown
-          label="Role Type"
-          options={CATEGORIES}
-          selected={filters.categories}
-          onToggle={(key) => onChange({ ...filters, categories: toggleItem(filters.categories, key) })}
-        />
-        <FilterDropdown
-          label="Source"
-          options={SOURCES}
-          selected={filters.sources}
-          onToggle={(key) => onChange({ ...filters, sources: toggleItem(filters.sources, key) })}
-        />
+    <div className="flex items-center gap-2 flex-wrap">
+      <FilterChip
+        label="Location"
+        options={REGIONS}
+        selected={filters.regions}
+        onToggle={(key) => onChange({ ...filters, regions: toggleItem(filters.regions, key) })}
+      />
+      <FilterChip
+        label="Role Type"
+        options={CATEGORIES}
+        selected={filters.categories}
+        onToggle={(key) => onChange({ ...filters, categories: toggleItem(filters.categories, key) })}
+      />
+      <FilterChip
+        label="Work Mode"
+        options={WORK_MODES}
+        selected={filters.workModes}
+        onToggle={(key) => onChange({ ...filters, workModes: toggleItem(filters.workModes, key) })}
+      />
+      <FilterChip
+        label="Source"
+        options={SOURCES}
+        selected={filters.sources}
+        onToggle={(key) => onChange({ ...filters, sources: toggleItem(filters.sources, key) })}
+      />
 
-        {hasAnyFilter && (
-          <button
-            onClick={() => onChange({ query: "", categories: [], regions: [], sources: [] })}
-            className="text-sm text-linkedin-blue hover:text-linkedin-blue-hover font-medium ml-1 cursor-pointer"
-          >
-            Reset
-          </button>
-        )}
+      {hasAnyFilter && (
+        <button
+          onClick={() => onChange({ query: "", categories: [], regions: [], sources: [], workModes: [] })}
+          className="text-sm text-primary hover:text-primary-hover font-medium ml-1 cursor-pointer"
+        >
+          Reset
+        </button>
+      )}
 
-        <span className="ml-auto text-xs text-text-tertiary">
-          {filteredCount.toLocaleString()} of {totalCount.toLocaleString()} jobs
-        </span>
-      </div>
+      <span className="ml-auto text-sm text-text-tertiary font-medium">
+        {filteredCount.toLocaleString()} of {totalCount.toLocaleString()} jobs
+      </span>
     </div>
   );
 }

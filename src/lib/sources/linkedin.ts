@@ -128,6 +128,8 @@ export function generateLinkedInJobs(): Job[] {
       tags: search.query.split(" "),
       category: search.category,
       region: loc.region,
+      workMode: "unknown" as const,
+      companyStage: null,
     }))
   );
 }

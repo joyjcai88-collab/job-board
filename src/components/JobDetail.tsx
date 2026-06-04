@@ -6,6 +6,7 @@ const SOURCE_LABELS: Record<string, string> = {
   linkedin: "LinkedIn / Indeed",
   hn: "Hacker News",
   themuse: "The Muse",
+  vc_boards: "VC Job Boards",
   web: "Web",
 };
 

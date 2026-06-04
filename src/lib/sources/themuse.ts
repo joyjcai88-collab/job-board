@@ -111,6 +111,8 @@ export async function fetchMuseJobs(): Promise<Job[]> {
           tags: (job.categories || []).map((c) => c.name || "").filter(Boolean).slice(0, 5),
           category,
           region,
+          workMode: "unknown",
+          companyStage: null,
         });
       }
     }

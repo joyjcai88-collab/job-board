@@ -201,6 +201,8 @@ export async function fetchJSearchJobs(): Promise<Job[]> {
         tags: extractTags(j),
         category: search.category,
         region: finalRegion,
+        workMode: j.job_is_remote ? "remote" : "onsite",
+        companyStage: null,
       });
     }
   }
