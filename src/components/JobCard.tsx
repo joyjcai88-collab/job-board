@@ -117,7 +117,47 @@ const CategoryIcon = () => (
   </svg>
 );
 
-export default function JobCard({ job }: { job: Job }) {
+function MatchBadge({ score }: { score: number }) {
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (score / 100) * circumference;
+
+  let color: string;
+  let label: string;
+  if (score >= 70) {
+    color = "#10b981";
+    label = "STRONG MATCH";
+  } else if (score >= 40) {
+    color = "#06b6d4";
+    label = "FAIR MATCH";
+  } else {
+    color = "#94a3b8";
+    label = "LOW MATCH";
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center w-[100px] shrink-0 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 py-3 px-2">
+      <div className="relative w-[76px] h-[76px]">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r={radius} fill="none" stroke="#334155" strokeWidth="4" />
+          <circle
+            cx="40" cy="40" r={radius} fill="none"
+            stroke={color} strokeWidth="4" strokeLinecap="round"
+            strokeDasharray={circumference} strokeDashoffset={offset}
+            style={{ transition: "stroke-dashoffset 0.6s ease" }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-white text-xl font-bold">{score}</span>
+          <span className="text-white/60 text-xs font-medium">%</span>
+        </div>
+      </div>
+      <span className="text-[10px] font-bold tracking-wide mt-1.5" style={{ color }}>{label}</span>
+    </div>
+  );
+}
+
+export default function JobCard({ job, matchScore }: { job: Job; matchScore: number | null }) {
   const region = REGION_LABELS[job.region] || job.location;
   const category = CATEGORY_LABELS[job.category] || "Other";
   const source = SOURCE_LABELS[job.source] || "Web";
@@ -127,6 +167,12 @@ export default function JobCard({ job }: { job: Job }) {
     <div className="bg-surface border border-border rounded-xl p-5 hover:shadow-md hover:border-primary/30 transition-all group">
       <div className="flex gap-4">
         <CompanyAvatar company={job.company} />
+        {/* Match score badge on right side */}
+        {matchScore !== null && (
+          <div className="order-last ml-auto hidden sm:block">
+            <MatchBadge score={matchScore} />
+          </div>
+        )}
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3">
@@ -194,6 +240,11 @@ export default function JobCard({ job }: { job: Job }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
+            {matchScore !== null && (
+              <span className="sm:hidden text-sm font-semibold" style={{ color: matchScore >= 70 ? "#10b981" : matchScore >= 40 ? "#06b6d4" : "#94a3b8" }}>
+                {matchScore}% match
+              </span>
+            )}
           </div>
         </div>
       </div>

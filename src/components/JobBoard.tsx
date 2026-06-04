@@ -2,8 +2,10 @@
 
 import { useState, useMemo } from "react";
 import { Job, JobFilters } from "@/lib/types";
+import { parseResumeText, rankJobs } from "@/lib/matching";
 import JobCard from "./JobCard";
 import Filters from "./Filters";
+import ResumeUpload from "./ResumeUpload";
 
 const PAGE_SIZE = 25;
 
@@ -16,6 +18,7 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
     workModes: [],
   });
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [resumeText, setResumeText] = useState<string | null>(null);
 
   const filteredJobs = useMemo(() => {
     return initialJobs.filter((job) => {
@@ -39,8 +42,15 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
     });
   }, [initialJobs, filters]);
 
-  const visibleJobs = filteredJobs.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredJobs.length;
+  const scoredJobs = useMemo(() => {
+    if (!resumeText) return filteredJobs.map((job) => ({ job, score: 0 }));
+    const profile = parseResumeText(resumeText);
+    const ranked = rankJobs(filteredJobs, profile);
+    return ranked;
+  }, [filteredJobs, resumeText]);
+
+  const visibleJobs = scoredJobs.slice(0, visibleCount);
+  const hasMore = visibleCount < scoredJobs.length;
 
   return (
     <div className="min-h-screen bg-bg">
@@ -93,15 +103,28 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
         </div>
       </div>
 
-      {/* Job List */}
+      {/* Main content */}
       <main className="max-w-[960px] mx-auto px-4 py-5">
+        {/* Resume Upload */}
+        <div className="mb-5">
+          <ResumeUpload
+            onResumeText={(text) => {
+              setResumeText(text);
+              setVisibleCount(PAGE_SIZE);
+            }}
+            isActive={!!resumeText}
+            onClear={() => setResumeText(null)}
+          />
+        </div>
+
+        {/* Job List */}
         <div className="flex flex-col gap-3">
-          {visibleJobs.map((job) => (
-            <JobCard key={job.id} job={job} />
+          {visibleJobs.map(({ job, score }) => (
+            <JobCard key={job.id} job={job} matchScore={resumeText ? score : null} />
           ))}
         </div>
 
-        {filteredJobs.length === 0 && (
+        {scoredJobs.length === 0 && (
           <div className="text-center py-20">
             <svg className="w-16 h-16 mx-auto mb-4 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m8 0H8m8 0a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2" />
@@ -125,7 +148,7 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
               onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
               className="px-8 py-2.5 bg-surface border border-border rounded-lg text-sm font-semibold text-text-primary hover:bg-surface-hover transition-colors cursor-pointer"
             >
-              Show more jobs ({filteredJobs.length - visibleCount} remaining)
+              Show more jobs ({scoredJobs.length - visibleCount} remaining)
             </button>
           </div>
         )}
