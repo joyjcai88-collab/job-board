@@ -65,94 +65,50 @@ function CompanyAvatar({ company }: { company: string }) {
     .join("")
     .toUpperCase();
 
-  const colors = [
-    "bg-blue-100 text-blue-700",
-    "bg-emerald-100 text-emerald-700",
-    "bg-purple-100 text-purple-700",
-    "bg-amber-100 text-amber-700",
-    "bg-rose-100 text-rose-700",
-    "bg-cyan-100 text-cyan-700",
-    "bg-indigo-100 text-indigo-700",
-  ];
-  const colorIdx = company.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % colors.length;
-
   return (
-    <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 ${colors[colorIdx]}`}>
-      <span className="text-base font-bold">{initials}</span>
+    <div className="w-14 h-14 rounded-none border border-border bg-tile flex items-center justify-center shrink-0">
+      <span className="font-mono text-[13px] tracking-[0.06em] text-text-secondary">
+        {initials}
+      </span>
     </div>
   );
 }
 
-function InfoPill({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+function Meta({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-sm text-text-secondary">
-      <span className="text-text-tertiary">{icon}</span>
-      {children}
+    <span className="inline-flex items-baseline gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.06em]">
+      <span className="text-text-tertiary">{label}</span>
+      <span className="text-text-primary">{children}</span>
     </span>
   );
 }
 
-const LocationIcon = () => (
-  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-);
-
-const WorkModeIcon = () => (
-  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-  </svg>
-);
-
-const SalaryIcon = () => (
-  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-const CategoryIcon = () => (
-  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m8 0H8m8 0a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2" />
-  </svg>
-);
+function matchLabel(score: number): string {
+  if (score >= 70) return "Strong match";
+  if (score >= 40) return "Fair match";
+  return "Low match";
+}
 
 function MatchBadge({ score }: { score: number }) {
-  const radius = 36;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (score / 100) * circumference;
-
-  let color: string;
-  let label: string;
-  if (score >= 70) {
-    color = "#10b981";
-    label = "STRONG MATCH";
-  } else if (score >= 40) {
-    color = "#06b6d4";
-    label = "FAIR MATCH";
-  } else {
-    color = "#94a3b8";
-    label = "LOW MATCH";
-  }
-
   return (
-    <div className="flex flex-col items-center justify-center w-[100px] shrink-0 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 py-3 px-2">
-      <div className="relative w-[76px] h-[76px]">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
-          <circle cx="40" cy="40" r={radius} fill="none" stroke="#334155" strokeWidth="4" />
-          <circle
-            cx="40" cy="40" r={radius} fill="none"
-            stroke={color} strokeWidth="4" strokeLinecap="round"
-            strokeDasharray={circumference} strokeDashoffset={offset}
-            style={{ transition: "stroke-dashoffset 0.6s ease" }}
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-white text-xl font-bold">{score}</span>
-          <span className="text-white/60 text-xs font-medium">%</span>
-        </div>
+    <div className="w-[104px] shrink-0">
+      <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-tertiary">
+        Match
+      </p>
+      <p className="mt-1 font-serif text-[30px] leading-none text-text-primary">
+        {score}
+        <span className="text-[14px] text-text-tertiary">%</span>
+      </p>
+      <div className="mt-2 h-[2px] w-full bg-track">
+        <div className="h-full bg-primary" style={{ width: `${score}%` }} />
       </div>
-      <span className="text-[10px] font-bold tracking-wide mt-1.5" style={{ color }}>{label}</span>
+      <p
+        className={`mt-1.5 font-mono text-[9.5px] uppercase tracking-[0.08em] ${
+          score >= 70 ? "text-success" : "text-text-tertiary"
+        }`}
+      >
+        {matchLabel(score)}
+      </p>
     </div>
   );
 }
@@ -164,10 +120,10 @@ export default function JobCard({ job, matchScore }: { job: Job; matchScore: num
   const workMode = WORK_MODE_LABELS[job.workMode] || "";
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-5 hover:shadow-md hover:border-primary/30 transition-all group">
+    <div className="bg-surface border border-border rounded-none p-5 hover:bg-tile transition-colors">
       <div className="flex gap-4">
         <CompanyAvatar company={job.company} />
-        {/* Match score badge on right side */}
+        {/* Match score on right side */}
         {matchScore !== null && (
           <div className="order-last ml-auto hidden sm:block">
             <MatchBadge score={matchScore} />
@@ -177,24 +133,24 @@ export default function JobCard({ job, matchScore }: { job: Job; matchScore: num
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
                 {job.postedAt && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-accent-light text-accent text-xs font-medium">
+                  <span className="inline-flex items-center rounded-full bg-success-dim px-2.5 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.08em] text-success">
                     {timeAgo(job.postedAt)}
                   </span>
                 )}
                 {typeof job.companyStage === "string" && formatStage(job.companyStage) && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-tag-bg text-tag-text text-xs font-medium">
+                  <span className="inline-flex items-center rounded-full bg-pill px-2.5 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.08em] text-text-primary">
                     {formatStage(job.companyStage)}
                   </span>
                 )}
               </div>
 
-              <h3 className="text-lg font-semibold text-text-primary leading-snug group-hover:text-primary transition-colors">
+              <h3 className="font-serif text-[18px] font-normal text-text-primary leading-snug tracking-[-0.01em]">
                 {job.title}
               </h3>
 
-              <p className="text-sm text-text-secondary mt-0.5">
+              <p className="font-serif text-[14.5px] leading-[1.55] text-text-secondary mt-0.5">
                 {job.company}
                 <span className="text-text-tertiary"> / </span>
                 <span className="text-text-tertiary">{category}</span>
@@ -209,10 +165,10 @@ export default function JobCard({ job, matchScore }: { job: Job; matchScore: num
           </div>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 mt-3">
-            <InfoPill icon={<LocationIcon />}>{region}</InfoPill>
-            {workMode && <InfoPill icon={<WorkModeIcon />}>{workMode}</InfoPill>}
-            {job.salary && <InfoPill icon={<SalaryIcon />}>{job.salary}</InfoPill>}
-            <InfoPill icon={<CategoryIcon />}>{category}</InfoPill>
+            <Meta label="Location">{region}</Meta>
+            {workMode && <Meta label="Mode">{workMode}</Meta>}
+            {job.salary && <Meta label="Salary">{job.salary}</Meta>}
+            <Meta label="Role">{category}</Meta>
           </div>
 
           {job.tags.length > 0 && (
@@ -220,7 +176,7 @@ export default function JobCard({ job, matchScore }: { job: Job; matchScore: num
               {job.tags.filter((t) => typeof t === "string").slice(0, 4).map((tag) => (
                 <span
                   key={tag}
-                  className="px-2 py-0.5 rounded-md bg-tag-bg text-tag-text text-xs font-medium"
+                  className="rounded-full bg-pill px-2.5 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.08em] text-text-secondary"
                 >
                   {tag}
                 </span>
@@ -228,20 +184,24 @@ export default function JobCard({ job, matchScore }: { job: Job; matchScore: num
             </div>
           )}
 
-          <div className="flex items-center gap-3 mt-4">
+          <div className="flex flex-wrap items-center gap-3 mt-4">
             <a
               href={job.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-5 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-lg transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full bg-text-primary px-[26px] py-[11px] font-mono text-[10.5px] uppercase tracking-[0.08em] text-surface hover:opacity-[.82] transition-opacity"
             >
               Apply
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
             {matchScore !== null && (
-              <span className="sm:hidden text-sm font-semibold" style={{ color: matchScore >= 70 ? "#10b981" : matchScore >= 40 ? "#06b6d4" : "#94a3b8" }}>
+              <span
+                className={`sm:hidden font-mono text-[10px] uppercase tracking-[0.08em] ${
+                  matchScore >= 70 ? "text-success" : "text-text-tertiary"
+                }`}
+              >
                 {matchScore}% match
               </span>
             )}

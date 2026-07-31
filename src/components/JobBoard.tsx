@@ -57,20 +57,39 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-surface border-b border-border">
         <div className="max-w-[960px] mx-auto px-4 py-3">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2.5 shrink-0">
-              <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20 6H16V4C16 2.9 15.1 2 14 2H10C8.9 2 8 2.9 8 4V6H4C2.9 6 2 6.9 2 8V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V8C22 6.9 21.1 6 20 6ZM10 4H14V6H10V4Z" />
-                </svg>
-              </div>
-              <h1 className="text-lg font-bold text-text-primary tracking-tight">JOBS</h1>
+          <div className="flex items-center gap-3 sm:gap-6">
+            <div className="flex items-center gap-2 shrink-0 text-text-primary">
+              <svg
+                viewBox="0 0 26 26"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                width="22"
+                height="22"
+                className="shrink-0"
+                aria-hidden="true"
+              >
+                <path d="M4 22 L4 4 L22 13 Z" />
+                <path d="M8 18.5 L8 7.5 L18.5 13 Z" />
+              </svg>
+              <h1 className="font-serif text-[21px] font-normal tracking-[-0.02em] leading-none whitespace-nowrap">
+                <a
+                  href="https://joyjcai.com"
+                  className="hidden min-[560px]:inline hover:text-text-secondary transition-colors"
+                >
+                  Joy Cai
+                </a>
+                <span className="hidden min-[560px]:inline text-text-tertiary">
+                  {" / "}
+                </span>
+                Job Board
+              </h1>
             </div>
 
-            <div className="flex-1 max-w-md">
-              <div className="flex items-center bg-bg rounded-lg px-3 h-9 border border-border focus-within:border-primary transition-colors">
-                <svg className="w-4 h-4 text-text-tertiary shrink-0 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <div className="flex-1 min-w-0 max-w-md">
+              <div className="flex items-center gap-2 border-b border-border focus-within:border-primary transition-colors">
+                <svg className="w-4 h-4 text-text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                   type="text"
@@ -80,7 +99,7 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
                     setFilters({ ...filters, query: e.target.value });
                     setVisibleCount(PAGE_SIZE);
                   }}
-                  className="flex-1 bg-transparent text-sm text-text-primary placeholder-text-tertiary outline-none"
+                  className="flex-1 min-w-0 bg-transparent rounded-none border-none py-[7px] font-serif text-[15px] text-text-primary placeholder:text-text-tertiary outline-none"
                 />
               </div>
             </div>
@@ -89,7 +108,7 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
       </header>
 
       {/* Filters */}
-      <div className="sticky top-[57px] z-40 bg-surface/80 backdrop-blur-sm border-b border-border">
+      <div className="sticky top-[57px] z-40 bg-surface border-b border-border">
         <div className="max-w-[960px] mx-auto px-4 py-2.5">
           <Filters
             filters={filters}
@@ -104,9 +123,9 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
       </div>
 
       {/* Main content */}
-      <main className="max-w-[960px] mx-auto px-4 py-5">
+      <main className="max-w-[960px] mx-auto px-4 py-6">
         {/* Resume Upload */}
-        <div className="mb-5">
+        <div className="mb-6">
           <ResumeUpload
             onResumeText={(text) => {
               setResumeText(text);
@@ -125,17 +144,19 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
         </div>
 
         {scoredJobs.length === 0 && (
-          <div className="text-center py-20">
-            <svg className="w-16 h-16 mx-auto mb-4 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m8 0H8m8 0a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2" />
-            </svg>
-            <p className="text-text-secondary text-base font-medium">No jobs match your filters</p>
+          <div className="text-center py-20 border border-border">
+            <p className="font-serif text-[20px] text-text-primary">
+              No jobs match your filters
+            </p>
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-text-tertiary">
+              Adjust or reset the filters above
+            </p>
             <button
               onClick={() => {
                 setFilters({ query: "", categories: [], regions: [], sources: [], workModes: [] });
                 setVisibleCount(PAGE_SIZE);
               }}
-              className="mt-3 text-sm text-primary hover:text-primary-hover font-medium cursor-pointer"
+              className="mt-5 inline-flex items-center rounded-full bg-pill px-[26px] py-[11px] font-mono text-[10.5px] uppercase tracking-[0.08em] text-text-primary hover:bg-pill-hi transition-colors cursor-pointer"
             >
               Clear all filters
             </button>
@@ -143,12 +164,12 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
         )}
 
         {hasMore && (
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-8">
             <button
               onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-              className="px-8 py-2.5 bg-surface border border-border rounded-lg text-sm font-semibold text-text-primary hover:bg-surface-hover transition-colors cursor-pointer"
+              className="rounded-full bg-pill px-[26px] py-[11px] font-mono text-[10.5px] uppercase tracking-[0.08em] text-text-primary hover:bg-pill-hi transition-colors cursor-pointer"
             >
-              Show more jobs ({scoredJobs.length - visibleCount} remaining)
+              Show more ({scoredJobs.length - visibleCount} remaining)
             </button>
           </div>
         )}

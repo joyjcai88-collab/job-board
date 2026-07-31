@@ -1,22 +1,51 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-light: #eff6ff;
-  --color-accent: #10b981;
-  --color-accent-light: #d1fae5;
+  /* Type */
+  --font-sans: Georgia, "Times New Roman", Times, serif;
+  --font-serif: Georgia, "Times New Roman", Times, serif;
+  --font-mono: var(--font-ibm-plex-mono), "SF Mono", SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
+
+  /* Accent */
+  --color-primary: #00b6c4;
+  --color-primary-hover: #00949f;
+  --color-primary-light: #e4f6f8;
+  --color-cyan-bright: #00ffff;
+
+  /* Semantic */
+  --color-accent: #00949f;
+  --color-accent-light: #e4f6f8;
+  --color-success: #00949f;
+  --color-success-dim: #e4f6f8;
+  --color-danger: #b4433f;
+  --color-danger-dim: #fbf0ef;
+  --color-warn: #927019;
+  --color-warn-dim: #f8f2e2;
+
+  /* Paper + surfaces */
+  --color-bg: #ffffff;
   --color-surface: #ffffff;
-  --color-surface-hover: #f8fafc;
-  --color-surface-active: #eff6ff;
-  --color-border: #e2e8f0;
-  --color-border-light: #f1f5f9;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #94a3b8;
-  --color-bg: #f8fafc;
-  --color-tag-bg: #f1f5f9;
-  --color-tag-text: #475569;
+  --color-surface-hover: #f5f5f5;
+  --color-surface-active: #efefef;
+  --color-tile: #f5f5f5;
+  --color-tile-hi: #efefef;
+
+  /* Hairlines */
+  --color-border: #e6e6e6;
+  --color-border-light: #f5f5f5;
+
+  /* Ink */
+  --color-text-primary: #000000;
+  --color-text-secondary: #757575;
+  --color-text-tertiary: #a3a3a3;
+
+  /* Pills */
+  --color-pill: #ececec;
+  --color-pill-hi: #e0e0e0;
+  --color-tag-bg: #ececec;
+  --color-tag-text: #000000;
+
+  /* Bars */
+  --color-track: #dcdcdc;
 }
