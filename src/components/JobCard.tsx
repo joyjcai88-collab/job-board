@@ -120,8 +120,8 @@ export default function JobCard({ job, matchScore }: { job: Job; matchScore: num
   const workMode = WORK_MODE_LABELS[job.workMode] || "";
 
   return (
-    <div className="bg-surface border border-border rounded-none p-5 hover:bg-tile transition-colors">
-      <div className="flex gap-4">
+    <div className="bg-surface border border-border rounded-none p-4 sm:p-5 hover:bg-tile transition-colors">
+      <div className="flex gap-3 sm:gap-4">
         <CompanyAvatar company={job.company} />
         {/* Match score on right side */}
         {matchScore !== null && (

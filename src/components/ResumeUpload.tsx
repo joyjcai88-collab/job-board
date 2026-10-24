@@ -124,7 +124,7 @@ export default function ResumeUpload({ onResumeText, isActive, onClear }: Resume
       onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
       onDragLeave={() => setDragOver(false)}
       onDrop={handleDrop}
-      className={`border border-dashed rounded-none p-7 text-center transition-colors cursor-pointer ${
+      className={`border border-dashed rounded-none p-4 sm:p-7 text-center transition-colors cursor-pointer ${
         dragOver
           ? "border-primary bg-tile"
           : "border-border hover:bg-tile"

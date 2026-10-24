@@ -123,9 +123,9 @@ export default function JobBoard({ initialJobs }: { initialJobs: Job[] }) {
       </div>
 
       {/* Main content */}
-      <main className="max-w-[960px] mx-auto px-4 py-6">
+      <main className="max-w-[960px] mx-auto px-4 py-4 sm:py-6">
         {/* Resume Upload */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <ResumeUpload
             onResumeText={(text) => {
               setResumeText(text);
