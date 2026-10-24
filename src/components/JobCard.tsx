@@ -189,7 +189,7 @@ export default function JobCard({ job, matchScore }: { job: Job; matchScore: num
               href={job.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full bg-text-primary px-[26px] py-[11px] font-mono text-[10.5px] uppercase tracking-[0.08em] text-surface hover:opacity-[.82] transition-opacity"
+              className="inline-flex items-center gap-1.5 rounded-full bg-text-primary px-[26px] py-[11px] font-mono text-[13px] text-surface hover:opacity-[.82] transition-opacity"
             >
               Apply
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -49,3 +49,22 @@
   /* Bars */
   --color-track: #dcdcdc;
 }
+
+/* Filter row: search and dropdowns in one strip, styled like joyjcai.com/adoptdontshop */
+.jb-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 22px; }
+.jb-search { flex: 1 1 220px; min-width: 160px; display: flex; align-items: baseline; gap: 8px; min-height: 38px; padding: 8px 0 7px; border-bottom: 1px solid var(--sc-border); transition: border-color 0.15s; }
+.jb-search:focus-within { border-bottom-color: var(--sc-cyan); }
+.jb-search input { flex: 1; min-width: 0; border: 0; padding: 0; background: transparent; outline: none; font-family: var(--sc-mono); font-size: 13px; line-height: 22px; color: var(--sc-ink); }
+.jb-search input::placeholder { color: var(--sc-subtle); }
+.sc-dd.jb-filter { width: auto; flex: 0 1 auto; min-width: 150px; }
+.jb-count { margin-left: auto; display: inline-flex; align-items: baseline; gap: 14px; padding-bottom: 9px; font-family: var(--sc-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sc-subtle); white-space: nowrap; }
+.jb-reset { font-family: var(--sc-mono); font-size: 12px; text-transform: none; letter-spacing: 0; color: var(--sc-muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; background: none; border: 0; padding: 0; }
+.jb-reset:hover { color: var(--sc-ink); text-decoration-color: var(--sc-cyan); }
+@media (pointer: coarse) { .jb-search input { font-size: 16px; } }
+/* Phones: search on its own row, two dropdowns per row */
+@media (max-width: 640px) {
+  .jb-toolbar { gap: 4px 16px; }
+  .jb-search { flex-basis: 100%; }
+  .sc-dd.jb-filter { flex: 1 1 calc(50% - 8px); min-width: 0; }
+  .jb-count { margin-left: 0; padding: 6px 0 2px; }
+}

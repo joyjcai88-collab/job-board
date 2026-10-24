@@ -93,7 +93,7 @@ export default function ResumeUpload({ onResumeText, isActive, onClear }: Resume
               setSkills([]);
               if (inputRef.current) inputRef.current.value = "";
             }}
-            className="shrink-0 rounded-full bg-pill px-[18px] py-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-primary hover:bg-pill-hi transition-colors cursor-pointer"
+            className="shrink-0 rounded-full bg-pill px-[18px] py-[9px] font-mono text-[12px] text-text-primary hover:bg-pill-hi transition-colors cursor-pointer"
           >
             Clear
           </button>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import "./site-chrome.css";
 
 const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
@@ -9,7 +10,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VC Job Board — Startup Jobs from Top VC Portfolios",
+  title: "VC Job Board · Startup jobs from top VC portfolios",
   description:
     "Curated startup jobs from Sequoia, a16z, Greylock, Bessemer, and 20+ top VC portfolios. Roles in VC, Chief of Staff, GTM, Product, BizOps, and Healthtech.",
 };
